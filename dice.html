@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Dice</title>
+    <!-- Link to the Three.js library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body>
+    <!-- The dice will render here -->
+    <script>
+        // Scene, Camera, Renderer
+        const scene = new THREE.Scene();
+
+        // Add lighting to brighten the dice
+        const pointLight = new THREE.PointLight(0xffffff, 1);
+        pointLight.position.set(10, 10, 10);
+        scene.add(pointLight);
+
+        const ambientLight = new THREE.AmbientLight(0x404040); // Adds soft light
+        scene.add(ambientLight);
+
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer();
+        renderer.setClearColor(0x202020); // Change background color to a softer dark gray
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        // Load textures for the dice faces
+        const loader = new THREE.TextureLoader();
+        const materialArray = [
+            new THREE.MeshStandardMaterial({ map: loader.load('/symbols/symbol1.png') }),
+            new THREE.MeshStandardMaterial({ map: loader.load('/symbols/symbol2.png') }),
+            new THREE.MeshStandardMaterial({ map: loader.load('/symbols/symbol3.png') }),
+            new THREE.MeshStandardMaterial({ map: loader.load('/symbols/symbol4.png') }),
+            new THREE.MeshStandardMaterial({ map: loader.load('/symbols/symbol5.png') }),
+            new THREE.MeshStandardMaterial({ map: loader.load('/symbols/symbol6.png') })
+        ];
+
+        // Create the Dice (Cube)
+        const geometry = new THREE.BoxGeometry();
+        const dice = new THREE.Mesh(geometry, materialArray);
+        scene.add(dice);
+
+        // Camera positioning
+        camera.position.z = 5;
+
+        // Handle window resizing
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // Animate the dice
+        function animate() {
+            requestAnimationFrame(animate);
+            dice.rotation.x += 0.01;
+            dice.rotation.y += 0.01;
+            renderer.render(scene, camera);
+        }
+
+        animate();
+    </script>
+</body>
+</html>
